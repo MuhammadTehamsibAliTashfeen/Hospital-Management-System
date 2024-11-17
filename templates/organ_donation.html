@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Organ Donation</h2>
+<h3>Register Organ Donation</h3>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    {{ form.organ.label }} {{ form.organ(size=32) }}<br>
+    {{ form.submit() }}
+</form>
+
+<h3>Available Organs</h3>
+<ul>
+    {% for donation in donations %}
+        <li>
+            Donor ID: {{ donation.donor_id }},
+            Organ: {{ donation.organ }},
+            Availability: {{ 'Yes' if donation.availability else 'No' }}
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,69 @@
+<!-- templates/appointment.html -->
+{% extends "base.html" %}
+{% block content %}
+<h2>Appointments</h2>
+
+{% if current_user.role == 'patient' %}
+    <h3>Your Booked Appointments</h3>
+    {% if booked_appointments %}
+        <ul>
+            {% for appointment in booked_appointments %}
+                <li>
+                    Doctor: {{ appointment.doctor.username }},
+                    Date: {{ appointment.date }},
+                    Time: {{ appointment.time }},
+                    Status: {{ appointment.status }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have no booked appointments.</p>
+    {% endif %}
+
+    <h3>Available Appointments</h3>
+    {% if available_appointments %}
+        <ul>
+            {% for appointment in available_appointments %}
+                <li>
+                    Doctor: {{ appointment.doctor.username }},
+                    Date: {{ appointment.date }},
+                    Time: {{ appointment.time }},
+                    Status: {{ appointment.status }}
+                    - <a href="{{ url_for('book_appointment', appointment_id=appointment.id) }}">Book</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No available appointments at the moment.</p>
+    {% endif %}
+
+{% elif current_user.role == 'doctor' %}
+    <h3>Create Appointment Slot</h3>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.date.label }} {{ form.date() }}<br>
+        {{ form.time.label }} {{ form.time() }}<br>
+        {{ form.submit() }}
+    </form>
+
+    <h3>Your Appointments</h3>
+    {% if appointments %}
+        <ul>
+            {% for appointment in appointments %}
+                <li>
+                    Date: {{ appointment.date }},
+                    Time: {{ appointment.time }},
+                    Status: {{ appointment.status }}
+                    {% if appointment.patient %}
+                        - Booked by: {{ appointment.patient.username }}
+                    {% else %}
+                        - Available
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have no appointments.</p>
+    {% endif %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,33 @@
+<!-- templates/medical_history.html -->
+{% extends "base.html" %}
+{% block content %}
+<h2>Medical History</h2>
+{% if current_user.role == 'doctor' %}
+    <h3>Add Medical Record</h3>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.patient_id.label }} {{ form.patient_id() }}<br>
+        {{ form.diagnosis.label }} {{ form.diagnosis(cols=40, rows=5) }}<br>
+        {{ form.submit() }}
+    </form>
+{% endif %}
+
+<h3>Medical Records</h3>
+{% if histories %}
+    <ul>
+        {% for history in histories %}
+            <li>
+                {% if current_user.role == 'doctor' %}
+                    Patient: {{ history.patient.username }},
+                {% else %}
+                    Doctor: {{ history.doctor.username }},
+                {% endif %}
+                Diagnosis: {{ history.diagnosis }},
+                Date: {{ history.date.strftime('%Y-%m-%d %H:%M:%S') }}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No medical records found.</p>
+{% endif %}
+{% endblock %}
